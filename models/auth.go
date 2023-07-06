@@ -3,23 +3,35 @@ package models
 import (
 	"QAPI/configs"
 	"QAPI/entities"
-	"QAPI/library"
+	"QAPI/logger"
 	"time"
 )
+
+func InsGetUser(deviceId string) (users *entities.Users) {
+	input := entities.Users{
+		DeviceId:  deviceId,
+		CreatedBy: deviceId,
+	}
+	if err := configs.DB.Where("device_id = ?", deviceId).Assign(input).FirstOrCreate(&users).Error; err != nil {
+		logger.Log.Err(err).Msg("Error Get User By DeviceID:")
+		users = nil
+	}
+	return
+}
 
 func GetUserByIdDevice(deviceId string) (users *entities.Users) {
 	err := configs.DB.Where("device_id = ?", deviceId).First(&users).Error
 	if err != nil {
-		library.Log.Err(err).Msg("Error Get User By DeviceID:")
+		logger.Log.Err(err).Msg("Error Get User By DeviceID:")
 		users = nil
 	}
 	return
 }
 
 func CreateUser(data entities.UserInsert) (status bool) {
-	err := configs.DB.Create(data).Error
+	err := configs.DB.Exec("INSERT INTO users(device_id, onesignal_id, created_by) values (?,?,?)", data.DeviceId, data.OnesignalId, data.DeviceId).Error
 	if err != nil {
-		library.Log.Err(err).Msg("Error Create User:")
+		logger.Log.Err(err).Msg("Error Create User:")
 		status = false
 		return
 	}
@@ -27,15 +39,13 @@ func CreateUser(data entities.UserInsert) (status bool) {
 	return
 }
 
-func UpdateLastLogin(id int8) (status bool) {
+func UpdateLastLogin(id int) {
 	loc, _ := time.LoadLocation("Asia/Jakarta")
 	users := map[string]interface{}{
 		"last_login": time.Now().In(loc),
 	}
 	err := configs.DB.Model(&entities.Users{}).Where("id=?", id).Updates(users).Error
 	if err != nil {
-		library.Log.Err(err).Msg("Error Update Last Login user:")
-		return false
+		logger.Log.Err(err).Msg("Error Update Last Login user:")
 	}
-	return true
 }

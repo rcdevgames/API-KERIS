@@ -3,14 +3,16 @@ package entities
 import "time"
 
 type Merchant struct {
-	ID                 int64     `json:"id" gorm:"type:int;primary_key"`
-	UserID             int64     `json:"user_id"`
+	ID                 int       `json:"id" gorm:"type:int;primary_key"`
+	UserID             int       `json:"user_id"`
 	QrisData           string    `json:"qris_data"`
 	QrisEmail          string    `json:"qris_email"`
 	QrisPassword       string    `json:"qris_password"`
+	QrisMnid           string    `json:"qris_mnid"`
+	QrisName           string    `json:"qris_name"`
 	LastMutationDate   string    `json:"last_mutation_date"`
-	LastMutationAmount int64     `json:"last_mutation_amount"`
-	LastMutationFound  int8      `json:"last_mutation_found"`
+	LastMutationAmount int       `json:"last_mutation_amount"`
+	LastMutationFound  int       `json:"last_mutation_found"`
 	CreatedDate        time.Time `json:"created_date"`
 	CreatedBy          string    `json:"created_by"`
 	UpdatedDate        time.Time `json:"updated_date"`
@@ -18,8 +20,10 @@ type Merchant struct {
 }
 
 type MerchantInsert struct {
-	UserID       int64  `json:"user_id"`
-	QrisData     string `json:"qris_data"`
-	QrisEmail    string `json:"qris_email"`
-	QrisPassword string `json:"qris_password"`
+	UserID       int    `json:"user_id"`
+	QrisData     string `json:"qris_data" binding:"required" gorm:"unique"`
+	QrisEmail    string `json:"qris_email" binding:"required" gorm:"unique"`
+	QrisPassword string `json:"qris_password" binding:"required"`
+	QrisMnid     string `json:"qris_mnid"`
+	QrisName     string `json:"qris_name"`
 }

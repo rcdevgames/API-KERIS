@@ -2,7 +2,7 @@ package core
 
 import (
 	"QAPI/entities"
-	"QAPI/library"
+	"QAPI/logger"
 	"QAPI/models"
 	"math"
 	"runtime"
@@ -51,7 +51,7 @@ func StartJob() {
 		STOP PROCESS
 	**/
 	timeFinish := time.Since(timeStart)
-	library.Log.Printf("Completed in %s", timeFinish)
+	logger.Log.Printf("Completed in %s", timeFinish)
 }
 
 func worker(merchants []entities.Merchant) {

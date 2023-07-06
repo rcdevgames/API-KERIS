@@ -3,6 +3,7 @@ module QAPI
 go 1.20
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.1
 	github.com/alexsasharegan/dotenv v0.0.0-20171113213728-090a4d1b5d42
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/gin-gonic/gin v1.9.1
@@ -13,6 +14,7 @@ require (
 )
 
 require (
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect

@@ -3,7 +3,7 @@ package main
 import (
 	"QAPI/configs"
 	"QAPI/core"
-	"QAPI/library"
+	"QAPI/logger"
 	"flag"
 )
 
@@ -12,7 +12,7 @@ var port = flag.String("port", "3000", "Listen Port")
 
 func main() {
 	flag.Parse()
-	library.InitLog()
+	logger.InitLog()
 	configs.ConnectDB()
 
 	if *service == "job" {

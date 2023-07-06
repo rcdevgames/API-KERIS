@@ -2,9 +2,14 @@ package controllers
 
 import (
 	"QAPI/entities"
+	"QAPI/logger"
 	"QAPI/models"
 	"net/http"
+	"os"
+	"strconv"
+	"time"
 
+	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,10 +39,39 @@ user_check:
 			})
 			return
 		}
-
 		goto user_check
-		return
 	} else {
-
+		if user.IsActive != 1 {
+			ctx.JSON(http.StatusForbidden, gin.H{
+				"success": false,
+				"message": "Akun anda sudah dinonaktifkan.",
+			})
+			return
+		}
+		claims := jwt.MapClaims{
+			"uid":       strconv.Itoa(user.Id),
+			"exp":       time.Now().Add(time.Minute * 30).Unix(),
+			"iss":       "dev.rcdevgames.net",
+			"id":        strconv.Itoa(user.Id),
+			"device_id": user.DeviceId,
+		}
+		sign := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+		token, errjwt := sign.SignedString([]byte(os.Getenv("APP_KEY")))
+		if errjwt != nil {
+			logger.Log.Err(errjwt).Msg("Error JWT " + user.DeviceId + ":")
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"success": false,
+				"message": "Terjadi kesalahan saat login, mohon coba kebali",
+			})
+			return
+		}
+		models.UpdateLastLogin(user.Id)
+		ctx.JSON(http.StatusOK, gin.H{
+			"success": true,
+			"message": "Login Berhasil",
+			"data": entities.LoginResponse{
+				AccessToken: token,
+			},
+		})
 	}
 }

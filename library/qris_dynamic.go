@@ -20,7 +20,7 @@ func ConvertQris(qris_data string, amount int64) (result string) {
 	fmt.Printf("\n[+] Result: %s\n", fix)
 
 	// Generate QR code
-	qrCode, err := qrcode.Encode(fix, qrcode.Medium, 256)
+	qrCode, err := qrcode.Encode(fix, qrcode.High, 256)
 	if err != nil {
 		fmt.Println("Failed to generate QR code:", err)
 		return

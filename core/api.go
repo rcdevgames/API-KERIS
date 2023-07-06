@@ -1,7 +1,7 @@
 package core
 
 import (
-	"QAPI/library"
+	"QAPI/logger"
 	routes "QAPI/router"
 	"context"
 	"net/http"
@@ -25,8 +25,9 @@ func StartRest(port string) {
 
 	go func() {
 		// service connections
+		logger.Log.Info().Msg("Running Server on PORT " + port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			library.Log.Err(err).Msg("Error Listen:")
+			logger.Log.Err(err).Msg("Error Listen:")
 		}
 	}()
 
@@ -38,17 +39,17 @@ func StartRest(port string) {
 	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	library.Log.Info().Msg("Shutdown Server ...")
+	logger.Log.Info().Msg("Shutdown Server ...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		library.Log.Err(err).Msg("Server Shutdown:")
+		logger.Log.Err(err).Msg("Server Shutdown:")
 	}
 	// catching ctx.Done(). timeout of 5 seconds.
 	select {
 	case <-ctx.Done():
-		library.Log.Info().Msg("timeout of 5 seconds.")
+		logger.Log.Info().Msg("timeout of 5 seconds.")
 	}
-	library.Log.Info().Msg("Server exiting")
+	logger.Log.Info().Msg("Server exiting")
 }

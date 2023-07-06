@@ -3,10 +3,10 @@ package entities
 import "time"
 
 type Users struct {
-	Id          int32     `json:"id" gorm:"type:int;primary_key"`
+	Id          int       `json:"id" gorm:"type:int;primary_key"`
 	DeviceId    string    `json:"device_id"`
 	OnesignalId string    `json:"onesignal_id"`
-	IsActive    int8      `json:"is_active"`
+	IsActive    int       `json:"is_active"`
 	LastLogin   time.Time `json:"last_login"`
 	CreatedDate time.Time `json:"created_date"`
 	CreatedBy   string    `json:"created_by"`
@@ -25,4 +25,8 @@ type UserUpdate struct {
 type LoginModel struct {
 	DeviceId    string `json:"device_id"`
 	OnesignalId string `json:"onesignal_id"`
+}
+
+type LoginResponse struct {
+	AccessToken string `json:"access_token"`
 }

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/alexsasharegan/dotenv"
 	"github.com/dgrijalva/jwt-go/v4"
@@ -42,11 +44,18 @@ func Authorize() gin.HandlerFunc {
 				if err == nil {
 					claims, ok := token.Claims.(jwt.MapClaims)
 					if ok && token.Valid {
-						var id = claims["id"]
-						var user *entities.Users
-						data := configs.DB.Find(&user, "id = ?", id)
-						if data.RowsAffected > 0 {
-							allowedToken = true
+						expired := getTokenRemainingValidity(claims["exp"])
+						if expired < 0 {
+							allowedToken = false
+						} else {
+							var id = claims["id"]
+							var user *entities.Users
+							data := configs.DB.Find(&user, "id = ?", id)
+							if data.RowsAffected > 0 {
+								ctx.Set("id_user", strconv.Itoa(user.Id))
+								ctx.Set("id_device", user.DeviceId)
+								allowedToken = true
+							}
 						}
 					}
 				}
@@ -70,4 +79,15 @@ func Authorize() gin.HandlerFunc {
 			return
 		}
 	}
+}
+
+func getTokenRemainingValidity(timestamp interface{}) int {
+	if validity, ok := timestamp.(float64); ok {
+		tm := time.Unix(int64(validity), 0)
+		remainer := tm.Sub(time.Now())
+		if remainer > 0 {
+			return int(remainer.Seconds())
+		}
+	}
+	return -1
 }
