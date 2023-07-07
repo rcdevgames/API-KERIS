@@ -67,6 +67,15 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
+	merchantData := models.GetMerchantByMNID(data_merchant.MNID)
+	if merchantData != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"success": false,
+			"message": "Merchant sudah terdaftar",
+		})
+		return
+	}
+
 	insert_data := entities.MerchantInsert{
 		UserID:       id,
 		QrisData:     data,
@@ -171,11 +180,11 @@ func UpdateMerchant(ctx *gin.Context) {
 		return
 	}
 
-	merchantData := models.GetMerchantByUserID(userId)
-	if merchantData == nil {
+	merchantData := models.GetMerchantByMNID(data_merchant.MNID)
+	if merchantData.UserID != userId {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
-			"message": "Data Merchant tidak ditemukan.",
+			"message": "Merchant sudah terdaftar untuk pengguna lain.",
 		})
 		return
 	}

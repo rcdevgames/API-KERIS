@@ -9,7 +9,15 @@ import (
 
 func GetMerchantByUserID(id int) (merchant *entities.Merchant) {
 	if err := configs.DB.Where("user_id = ?", id).First(&merchant).Error; err != nil {
-		logger.Log.Err(err).Msg("Error Get User By DeviceID:")
+		logger.Log.Err(err).Msg("Error Get User By User:")
+		merchant = nil
+	}
+	return
+}
+
+func GetMerchantByMNID(MNID string) (merchant *entities.Merchant) {
+	if err := configs.DB.Where("qris_mnid = ?", MNID).First(&merchant).Error; err != nil {
+		logger.Log.Err(err).Msg("Error Get User By MNID:")
 		merchant = nil
 	}
 	return
