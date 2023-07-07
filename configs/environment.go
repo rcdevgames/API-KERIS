@@ -12,7 +12,7 @@ func InitEnv() {
 	}
 
 	if _, err := os.Stat(dirname + "/.env"); errors.Is(err, os.ErrNotExist) {
-		env := []byte("DB_HOST=\nDB_PORT=\nDB_USER=\nDB_PASS=\nDB_NAME=\nAPP_KEY=")
+		env := []byte("DB_HOST=\nDB_PORT=\nDB_USER=\nDB_PASS=\nDB_NAME=\nAPP_KEY=\nONESIGNAL_ID=\nONESIGNAL_KEY=")
 		err := os.WriteFile(dirname+"/.env", env, 0644)
 		if err != nil {
 			panic(err)
