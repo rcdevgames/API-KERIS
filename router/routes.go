@@ -20,13 +20,11 @@ func Init(router *gin.Engine) {
 	{
 		merchantRoute := authorizedRoute.Group("/merchant")
 		{
-			merchantRoute.GET("/", controllers.GetDetail)
+			merchantRoute.GET("", controllers.GetDetail)
+			merchantRoute.PUT("", controllers.UpdateMerchant)
 			merchantRoute.POST("/register", controllers.Register)
 		}
 
-		trxRoute := authorizedRoute.Group("/trx")
-		{
-			trxRoute.POST("/", controllers.GenerateQRIS)
-		}
+		authorizedRoute.POST("/trx", controllers.GenerateQRIS)
 	}
 }

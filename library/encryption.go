@@ -36,19 +36,17 @@ func Encode(data string) (string, error) {
 	return result, nil
 }
 
-func Decode(data string) (result *string) {
+func Decode(data string) (string, error) {
 	if err := dotenv.Load(); err != nil {
 		logger.Log.Err(err).Msg("Gagal Load .env:")
-		result = nil
-		return
+		return "", err
 	}
 
 	// Dekripsi dari base64 ke byte array
 	decoded, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		logger.Log.Err(err).Msg("Gagal Decode Base64")
-		result = nil
-		return
+		return "", err
 	}
 
 	key := []byte(os.Getenv("APP_KEY"))
@@ -57,12 +55,12 @@ func Decode(data string) (result *string) {
 	decrypted, err := _decryptAES(decoded, key)
 	if err != nil {
 		logger.Log.Err(err).Msg("Gagal Decrypt AES")
-		result = nil
-		return
+		return "", err
 	}
 
-	*result = string(decrypted)
-	return
+	result := string(decrypted)
+
+	return result, nil
 }
 
 func _encryptAES(plainText, key []byte) ([]byte, error) {
