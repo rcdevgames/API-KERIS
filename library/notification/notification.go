@@ -27,7 +27,7 @@ type FirebaseNotification struct {
 // 	return
 // }
 
-func SendPushNotification(deviceToken, title, body string, data map[string]string) error {
+func PushNotifV1(deviceToken, title, body string, data map[string]string) error {
 	// Create the push notification object
 	pushNotification := FirebasePushNotification{
 		To:   deviceToken,

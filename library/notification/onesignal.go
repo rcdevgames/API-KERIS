@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -15,7 +15,7 @@ type Notification struct {
 	IncludedSegments []string          `json:"included_segments"`
 }
 
-func PushNotif() {
+func PushNotifOSG() {
 	// Create a notification object with the required data
 	notification := Notification{
 		AppID: "YOUR_APP_ID",
@@ -48,7 +48,7 @@ func PushNotif() {
 	defer resp.Body.Close()
 
 	// Read the response body
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
 		return

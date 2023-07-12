@@ -10,7 +10,7 @@ import (
 	"google.golang.org/api/option"
 )
 
-func main() {
+func PushNotifV2() {
 	// Initialize the Firebase app
 	ctx := context.Background()
 	opt := option.WithCredentialsFile("path/to/serviceAccountKey.json") // Replace with your own service account key file
